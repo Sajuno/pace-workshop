@@ -36,6 +36,12 @@ Although the primary objective is to have a functionally working solution with c
 output, the secondary objective is to make it as fast as possible. Processing times
 below one second should be easily achievable.
 
+## Checkout
+
+Please note that this repo uses Git LFS in order to store the dataset file. Before you
+clone this repository please make sure you have Git LFS installed. You can find some
+[instructions here](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage).
+
 ## Organisation
 
 Pick any programming language and platform you like. Do it solo, as a pair or group.
