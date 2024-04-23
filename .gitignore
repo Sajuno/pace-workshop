@@ -1,0 +1,7 @@
+.DS_Store
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+go.work
