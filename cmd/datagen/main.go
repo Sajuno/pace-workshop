@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	stationCount           = 40
-	measurementsPerStation = 250000
+	stationCount           = 1
+	measurementsPerStation = 1
 )
 
 type measurement struct {
