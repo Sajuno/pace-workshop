@@ -1,8 +1,8 @@
 # Ten Million Row Challenge
 
-I have generated a (CSV) dataset with ten million rows. Each row in the dataset
-represents a single temperature measurement of a weather station. There are
-multiple weatherstations in the dataset.
+I have generated a [(CSV) dataset](./data/measurements.csv) with ten million rows.
+Each row in the dataset represents a single temperature measurement of a weather
+station. There are multiple weatherstations in the dataset.
 
 Example:
 
