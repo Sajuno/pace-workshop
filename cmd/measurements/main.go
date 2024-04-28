@@ -72,8 +72,7 @@ func chunkBytes(b []byte, amt int) [][]byte {
 	for start < blen {
 		maxIndex := start + size
 		if maxIndex < blen-1 {
-			idx := bytes.LastIndexByte(b[start:maxIndex], '\n')
-			end += idx
+			end += bytes.LastIndexByte(b[start:maxIndex], '\n')
 		} else {
 			end = blen
 		}
@@ -84,6 +83,7 @@ func chunkBytes(b []byte, amt int) [][]byte {
 	return chunks
 }
 
+// processLines doesn't use bufio.Scanner (and is a lot dumber for it). It's fast though
 func processLines(lines []byte, out chan map[string]*data) {
 	m := map[string]*data{}
 
@@ -99,6 +99,8 @@ func processLines(lines []byte, out chan map[string]*data) {
 		}
 
 		line := string(lines[lineStart : lineEnd-1])
+		// this should not be needed but chunkBytes shows some inconsistent behaviour with newline and this
+		// was the dumb fix
 		if line == "" {
 			lineStart = lineEnd
 			continue
@@ -154,7 +156,7 @@ func f32Max(x, y float32) float32 {
 	return y
 }
 
-// I'm not smart enough to understand go's implementation but this works for our use case
+// I'm not smart enough to understand go's implementation but this works for our use case (float32's are more efficient)
 func parseFloat32(s string) (float32, error) {
 	var (
 		f         float32
@@ -167,6 +169,8 @@ func parseFloat32(s string) (float32, error) {
 		if char >= '0' && char <= '9' {
 			if !isDecimal {
 				f *= 10 // every non decimal multiplies by 10
+				// char - 0 here is just a clever (tm) way to remove all unicode points before '0'
+				// leaving you with just the number you want
 				f += float32(char - '0')
 			} else {
 				f += float32(char-'0') / div
