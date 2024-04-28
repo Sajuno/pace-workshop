@@ -54,7 +54,7 @@ func main() {
 	close(out)
 
 	for k, v := range results {
-		fmt.Printf("{ \"station\": \"%s\", \"min\": %.2f, \"max\": %.2f, \"avg\": %.2f }\n", k, v.min, v.max, v.total/float64(v.numPoints))
+		fmt.Printf("{ \"station\": \"%s\", \"min\": %.1f, \"max\": %.1f, \"avg\": %.1f }\n", k, v.min, v.max, v.total/float64(v.numPoints))
 	}
 
 	readerAt.Close()
