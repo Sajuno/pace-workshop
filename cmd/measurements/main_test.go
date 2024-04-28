@@ -33,4 +33,15 @@ func TestParseFloat32(t *testing.T) {
 	if f != exp {
 		t.Errorf("result doesnt match, got: %v, exp: %v", f, exp)
 	}
+
+	//.negative
+	str2 := "-32.367904"
+	exp2 := float32(-32.367904)
+	f2, err := parseFloat32(str2)
+	if err != nil {
+		t.Error(err)
+	}
+	if f2 != exp2 {
+		t.Errorf("result doesnt match, got: %v, exp: %v", f2, exp2)
+	}
 }

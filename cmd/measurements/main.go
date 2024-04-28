@@ -154,15 +154,16 @@ func f32Max(x, y float32) float32 {
 	return y
 }
 
-// I'm not smart enough to understand go's implementation but this is at least faster
+// I'm not smart enough to understand go's implementation but this works for our use case
 func parseFloat32(s string) (float32, error) {
 	var (
 		f         float32
 		div       float32 = 10 // anything after '.' causes a division by at least 10
 		isDecimal bool
+		negative  bool
 	)
 
-	for _, char := range s {
+	for i, char := range s {
 		if char >= '0' && char <= '9' {
 			if !isDecimal {
 				f *= 10 // every non decimal multiplies by 10
@@ -173,9 +174,15 @@ func parseFloat32(s string) (float32, error) {
 			}
 		} else if char == '.' {
 			isDecimal = true
+		} else if char == '-' && i == 0 {
+			negative = true
 		} else {
 			return 0, fmt.Errorf("this ain't gonna float: %s", s)
 		}
+	}
+
+	if negative {
+		f *= -1
 	}
 
 	return f, nil
