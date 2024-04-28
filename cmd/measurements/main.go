@@ -26,7 +26,7 @@ func main() {
 	}
 	results := map[string]*data{}
 	cpus := 32
-	out := make(chan map[string]*data, 32)
+	out := make(chan map[string]*data)
 	b := make([]byte, readerAt.Len())
 	readerAt.ReadAt(b, 0)
 
