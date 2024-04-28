@@ -4,15 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"golang.org/x/exp/mmap"
-	"math"
-	"strconv"
 	"strings"
 	"time"
 )
 
 type data struct {
-	min float64
-	max float64
+	min float32
+	max float32
 
 	numPoints int
 	total     float64
@@ -43,8 +41,8 @@ func main() {
 			if d, ok := results[k]; !ok {
 				results[k] = v
 			} else {
-				d.min = math.Min(d.min, v.min)
-				d.max = math.Max(d.max, v.max)
+				d.min = f32Min(d.min, v.min)
+				d.max = f32Max(d.max, v.max)
 				d.numPoints += v.numPoints
 				d.total += v.total
 			}
@@ -114,7 +112,7 @@ func processLines(lines []byte, out chan map[string]*data) {
 
 		name := line[:sep]
 		// lineEnd -1 in order to avoid the \n at the end
-		val, err := strconv.ParseFloat(line[sep+1:], 64)
+		val, err := parseFloat32(line[sep+1:])
 		if err != nil {
 			panic(err)
 		}
@@ -124,15 +122,15 @@ func processLines(lines []byte, out chan map[string]*data) {
 			m[name] = &data{
 				min:       val,
 				max:       val,
-				total:     val,
+				total:     float64(val),
 				numPoints: 1,
 			}
 		} else {
-			d.min = math.Min(d.min, val)
-			d.max = math.Max(d.max, val)
+			d.min = f32Min(d.min, val)
+			d.max = f32Max(d.max, val)
 
 			d.numPoints += 1
-			d.total += val
+			d.total += float64(val)
 		}
 
 		// move start index to next line
@@ -140,4 +138,45 @@ func processLines(lines []byte, out chan map[string]*data) {
 	}
 
 	out <- m
+}
+
+func f32Min(x, y float32) float32 {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+func f32Max(x, y float32) float32 {
+	if x > y {
+		return x
+	}
+	return y
+}
+
+// I'm not smart enough to understand go's implementation but this is at least faster
+func parseFloat32(s string) (float32, error) {
+	var (
+		f         float32
+		div       float32 = 10 // anything after '.' causes a division by at least 10
+		isDecimal bool
+	)
+
+	for _, char := range s {
+		if char >= '0' && char <= '9' {
+			if !isDecimal {
+				f *= 10 // every non decimal multiplies by 10
+				f += float32(char - '0')
+			} else {
+				f += float32(char-'0') / div
+				div *= 10 // every next decimal divides by *10
+			}
+		} else if char == '.' {
+			isDecimal = true
+		} else {
+			return 0, fmt.Errorf("this ain't gonna float: %s", s)
+		}
+	}
+
+	return f, nil
 }

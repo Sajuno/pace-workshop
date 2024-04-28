@@ -13,14 +13,24 @@ func TestChunkBytes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//for i := 0; i < 3; i++ {
 	b := make([]byte, ra.Len())
 	ra.ReadAt(b, 0)
-	//}
 
-	// expect 3 sets of lines
 	chunks := chunkBytes(b, runtime.NumCPU()-1)
 
 	fmt.Println(len(chunks))
-	fmt.Println(string(chunks[30]))
+	fmt.Println(string(chunks[31]))
+}
+
+func TestParseFloat32(t *testing.T) {
+	str := "32.367904"
+	exp := float32(32.367904)
+
+	f, err := parseFloat32(str)
+	if err != nil {
+		t.Error(err)
+	}
+	if f != exp {
+		t.Errorf("result doesnt match, got: %v, exp: %v", f, exp)
+	}
 }
